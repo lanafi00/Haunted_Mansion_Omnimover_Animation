@@ -1,0 +1,61 @@
+if (`headsUpDisplay -exists HUD_uValue`)    headsUpDisplay -remove HUD_uValue;
+if (`headsUpDisplay -exists HUD_yaw`)       headsUpDisplay -remove HUD_yaw;
+if (`headsUpDisplay -exists HUD_velocity`)  headsUpDisplay -remove HUD_velocity;
+
+global string $NS;
+global float $FPS;
+global float $REAL_LENGTH_FT;
+
+$NS = "haunted_mansion_ride_rig5:";
+$FPS = 30.0;
+$REAL_LENGTH_FT = 930.0;  
+
+global proc string telUValue() {
+    global string $NS;
+    float $mu = `getAttr ($NS + "middlepath.u")` * 30.3 * 930;
+    float $fu = `getAttr ($NS + "frontpath.u")` * 30.3* 930;
+    float $bu = `getAttr ($NS + "behindpath.u")` * 30.3 * 930;
+    return ("Distance  |  M: " + $mu + "  F: " + $fu + "  B: " + $bu);
+}
+
+global proc string telYaw() {
+    global string $NS;
+    float $my = `getAttr ($NS + "ANIM_Secondary_Yaw.rotateY")`;
+    float $fy = `getAttr ($NS + "ANIM_Primary_Yaw.rotateY")`;
+    float $by = `getAttr ($NS + "ANIM_Tertiary_Yaw.rotateY")`;
+    return ("Yaw  |  M: " + $my + "  F: " + $fy + "  B: " + $by);
+}
+
+global proc string telVelocity() {
+    global string $NS;
+    global float $FPS;
+    global float $REAL_LENGTH_FT;
+    float $cf = `currentTime -q`;
+    float $muP = `getAttr -t ($cf-1) ($NS + "middlepath.u")` * 30.3;
+    float $muA = `getAttr -t ($cf+1) ($NS + "middlepath.u")` * 30.3;
+    float $fuP = `getAttr -t ($cf-1) ($NS + "frontpath.u")` * 30.3;
+    float $fuA = `getAttr -t ($cf+1) ($NS + "frontpath.u")` * 30.3;
+    float $buP = `getAttr -t ($cf-1) ($NS + "behindpath.u")` * 30.3;
+    float $buA = `getAttr -t ($cf+1) ($NS + "behindpath.u")` * 30.3;
+    float $mv = ($muA-$muP)/2.0 * $FPS * $REAL_LENGTH_FT;
+    float $fv = ($fuA-$fuP)/2.0 * $FPS * $REAL_LENGTH_FT;
+    float $bv = ($buA-$buP)/2.0 * $FPS * $REAL_LENGTH_FT;
+    return ("ft/s  |  M: " + $mv + "  F: " + $fv + "  B: " + $bv);
+}
+
+int $block = `headsUpDisplay -nextFreeBlock 5`;
+
+headsUpDisplay -section 5 -block $block -blockSize "small"
+    -label "Distance Elapsed (ft)" -labelFontSize "small"
+    -command "telUValue()" -event "timeChanged"
+    HUD_uValue;
+
+headsUpDisplay -section 5 -block ($block+1) -blockSize "small"
+    -label "Yaw" -labelFontSize "small"
+    -command "telYaw()" -event "timeChanged"
+    HUD_yaw;
+
+headsUpDisplay -section 5 -block ($block+2) -blockSize "small"
+    -label "Velocity" -labelFontSize "small"
+    -command "telVelocity()" -event "timeChanged"
+    HUD_velocity;
