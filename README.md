@@ -4,6 +4,10 @@
  
 A simulation of the Disneyland **Haunted Mansion** attraction's omnimover vehicle system, built in Autodesk Maya.
 
+<img width="421" height="453" alt="image" src="https://github.com/user-attachments/assets/c5713557-f35a-4188-b7fd-217fe0f231f4" />
+<img width="389" height="390" alt="image" src="https://github.com/user-attachments/assets/90339dc4-9c9a-4dac-a129-a21cc3197b1e" />
+<img width="727" height="399" alt="image" src="https://github.com/user-attachments/assets/cf483d29-343d-4bc6-9391-4de3109850e9" />
+
 ---
  
 ## Features
